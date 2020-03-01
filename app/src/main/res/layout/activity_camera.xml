@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:opencv="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <SurfaceView
+                android:id="@+id/activity_surface_view"
+                android:layout_width="match_parent"
+                android:layout_height="595dp"
+                android:background="@color/darkblue" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="39dp"
+                android:layout_weight="1"
+                android:background="@color/yellow"
+                android:fontFamily="@font/font1"
+                android:gravity="center_vertical"
+                android:text="화면 아무 곳에나 터치하면 촬영을 시작합니다."
+                android:textAlignment="center"
+                android:textColor="@color/darkblue"
+                android:textSize="16dp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#00ff0000"
+            android:onClick="ButtonChecked"
+            tools:ignore="OnClick" />
+
+    </FrameLayout>
+
+
+</LinearLayout>

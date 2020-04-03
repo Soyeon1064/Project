@@ -16,10 +16,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MapActivity"></activity>
+
         <!-- 네이버 지도 -->
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
-            android:value="본인의 API 키를 여기에 입력해주시면 됨!_김소연 올림" />
+            android:value="0vc8pp8mux" />
 
         <activity android:name=".MembershipActivity" />
         <activity

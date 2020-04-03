@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Main2Activity"
+    tools:context=".MainActivity"
     android:orientation="vertical">
 
     <FrameLayout
@@ -88,7 +88,7 @@
                 android:layout_marginStart="168dp"
                 android:layout_marginEnd="60dp"
                 android:fontFamily="@font/font1"
-                android:text="사 물  인 식"
+                android:text="상 품  인 식"
                 android:textColor="@color/yellow"
                 android:textSize="50dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -184,7 +184,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="192dp"
                 android:fontFamily="@font/font1"
-                android:text="  근  처 \n편 의 점"
+                android:text="가 까 운\n편 의 점"
                 android:textColor="#ffffff"
                 android:textSize="50dp"
                 app:layout_constraintBottom_toBottomOf="parent"

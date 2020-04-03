@@ -28,7 +28,7 @@
         android:src="@drawable/curtain"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.777"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
@@ -61,7 +61,7 @@
         android:id="@+id/textView2"
         android:layout_width="404dp"
         android:layout_height="55dp"
-        android:layout_marginTop="696dp"
+        android:layout_marginTop="692dp"
         android:fontFamily="@font/font2"
         android:text="Copyright 2020. 미니 냉장고 All rights reserved."
         android:textColor="@color/yellow"

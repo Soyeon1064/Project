@@ -3,10 +3,10 @@
     package="com.example.project">
 
     <uses-permission android:name="android.permission.VIBRATE" />
-    <!--네이버 지도 현재 위치 권한-->
+    <!-- 지도 권한 설정 -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -15,9 +15,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MapActivity"></activity>
-
-        <!-- 네이버 지도 -->
+        <activity android:name=".MinistopMembershipCategoryActivity" />
+        <activity android:name=".EmartMembershipCategoryActivity" />
+        <activity android:name=".SevenElevenMembershipCategoryActivity" />
+        <activity android:name=".CUMembershipCategoryActivity" />
+        <activity android:name=".GSMembershipCategoryActivity" />
+        <activity android:name=".MapActivity" />
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="0vc8pp8mux" />

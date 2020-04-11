@@ -11,6 +11,7 @@ import android.util.Log;
 
 import androidx.core.content.ContextCompat;
 
+//혹시 몰라서 남겨 놓습니다. 필요 없을시 삭제하세요!
 public class GpsTracker implements LocationListener {
     private final Context mContext;
     Location location;

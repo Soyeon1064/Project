@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+//상품 인식 activity
 public class CameraActivity extends AppCompatActivity {
 
     @Override

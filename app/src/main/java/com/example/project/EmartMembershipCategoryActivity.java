@@ -1,17 +1,14 @@
 package com.example.project;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
+
 import android.os.Bundle;
 
-
-public class MapActivity extends AppCompatActivity {
+public class EmartMembershipCategoryActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map);
-
+        setContentView(R.layout.activity_emart_membership_category);
     }
-
 }

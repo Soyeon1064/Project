@@ -2,8 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.project">
 
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <!-- 지도 권한 설정 -->
+    <uses-permission android:name="android.permission.VIBRATE" /> <!-- 지도 권한 설정 -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -21,6 +20,7 @@
         <activity android:name=".CUMembershipCategoryActivity" />
         <activity android:name=".GSMembershipCategoryActivity" />
         <activity android:name=".MapActivity" />
+
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="0vc8pp8mux" />

@@ -1,6 +1,8 @@
 package com.example.project;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -31,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Button2-> 사물인식_카메라 촬영 버튼 클릭
     public void onButtonCameraClicked(View view) {
-        Intent intent = new Intent(this,CameraActivity.class);
+        Intent intent = new Intent(this, CameraActivity.class);
         startActivity(intent);
     }
 
@@ -48,6 +50,21 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
 
     }
+
+
+    //TTS 사용하고자 한다면 3) 액티비티가 꺼졌을 시 TTS 음성도 꺼지게 해주기 > 아래 '두' 메소드 복사 붙여넣기.
+
+    //어플이 꺼지거나 중단 된다면 TTS 어댑터의 ttsShutdown() 메소드 호출하기
+    protected void onDestroy() {
+        super.onDestroy();
+        tts.ttsShutdown();
+    }
+
+    //오류 발생 > main 액티비티에서 다른 액티비티로 이동할 때 당연히 tts를 꺼야 하는데 오류가 나서...참
+//    protected void onStop(){
+//        super.onStop();
+//        tts.ttsShutdown();
+//    }
 
 
 }

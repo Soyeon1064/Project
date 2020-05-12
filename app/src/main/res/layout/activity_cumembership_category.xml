@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CUMembershipCategoryActivity" android:background="@color/darkblue">
+    tools:context=".CUMembershipCategoryActivity"
+    android:background="@color/darkblue">
 
     <TextView
         android:id="@+id/textView6"

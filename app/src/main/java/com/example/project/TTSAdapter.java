@@ -18,6 +18,7 @@ public class TTSAdapter extends AppCompatActivity implements TextToSpeech.OnInit
         //this는 TextToSpeech.OnInitListener를 가리키며,
         //onInit을 호출한다.
         tts = new TextToSpeech(context, this);
+
     }
 
     //TTS 객체를 생성하면 호출되는 메소드
@@ -31,15 +32,33 @@ public class TTSAdapter extends AppCompatActivity implements TextToSpeech.OnInit
         }
     }
 
-    //TTS 끝나면 TTS shutdown.
+
+
+    //TTS 마무리 짓기
     protected void finalize() {
         tts.shutdown();
     }
 
-    //어플이 꺼지거나 중단 된다면 TTS shutdown.
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+
+    //아래 구현 안 되는 것 해결방법
+    //TTS 객체 쓰는 액티비티에서 onPause(), onDestroy() 메소드가 실행되면
+    //ttsShutdown() 메소드를 호출하게 한다.
+    public void ttsShutdown(){
         tts.shutdown();
     }
+    //아래를 여기에 구현할 수 있다면 참 좋을텐데...
+
+//    //어플이 꺼지거나 중단 된다면 TTS shutdown.
+//    protected void onDestroy(Context context) {
+//        super.onDestroy();
+//        tts.shutdown();
+//    }
+//
+//    protected void onPause(Context context) {
+//        super.onPause();
+//        tts.shutdown();
+//    }
+
+
+
 }

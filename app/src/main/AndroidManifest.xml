@@ -19,7 +19,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MinistopMembershipCategoryActivity" />
         <activity android:name=".EmartMembershipCategoryActivity" />
         <activity android:name=".SevenElevenMembershipCategoryActivity" />
         <activity android:name=".CUMembershipCategoryActivity" />

@@ -39,11 +39,6 @@ public class MembershipActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    //Ministop 눌렀을 때 -> MinistopMembershipCategoryActivity로 이동
-    public void onButtonMinistopClicked(View view) {
-        Intent intent = new Intent(this,MinistopMembershipCategoryActivity.class);
-        startActivity(intent);
-    }
 
 
 }

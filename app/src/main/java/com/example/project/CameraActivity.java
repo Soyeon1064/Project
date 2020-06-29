@@ -112,8 +112,7 @@ public class CameraActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
 
-        tts = new TTSAdapter(this,"상품 진열대에 손을 얹고, 팔이 쭉 펴진 거리만큼 서서 촬영을 진행해 주세요. " +
-                "촬영이 완료되면 가벼운 멜로디가 흘러나온 후, 상품을 안내해 드립니다."); //TTS 사용하고자 한다면 2) 클래스 객체 생성
+        tts = new TTSAdapter(this,"상품 진열대에서 반 발자국 물러서서 촬영을 진행해 주세요. 화면을 터치하면 촬영이 진행됩니다."); //TTS 사용하고자 한다면 2) 클래스 객체 생성
 
         //효과음 설정
         //롤리팝 이상 버전일 경우 > 우리는 여기에 해당
@@ -145,19 +144,20 @@ public class CameraActivity extends AppCompatActivity {
         btnCapture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                //효과음 설정
-                //맨 처음 play 변수가 false 라면
-                if(!play){
-                    //효과음 출력해야 되는데 tts가 흘러나오면 안 되니까 tts 중단
                     tts.ttsShutdown();
-                    //Id 넣어줘서 재생시키기
-                    playSoundId=soundManager.playSound(0);
-                    play = true;
-                }else{
-                    //음성 출력 중지
-                    soundManager.pauseSound(0); play = false;
-                }
+                    soundManager.playSound(0);
+
+//                //효과음 설정
+//                //맨 처음 play 변수가 false 라면
+//                if(!play){
+//                    //효과음 출력해야 되는데 tts가 흘러나오면 안 되니까 tts 중단
+//                    tts.ttsShutdown();
+//                    //Id 넣어줘서 재생시키기
+//                    playSoundId=soundManager.playSound(0);
+//                    play = true;
+//                }else{
+//                    soundManager.resumeSound(0);
+//                }
 
                 takePicture(); //사진을 촬영 설정하는 메소드 호출
             }
@@ -251,6 +251,8 @@ public class CameraActivity extends AppCompatActivity {
                 @Override
                 public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
                     super.onCaptureCompleted(session, request, result);
+//                    tts.ttsShutdown();
+//                    playSoundId=soundManager.playSound(0);
                     //저장 되었습니다. 토스트 창
                     Toast.makeText(CameraActivity.this, "Saved "+file, Toast.LENGTH_SHORT).show();
                     //다시 촬영할 수 있도록 카메라 화면 보여주는 메소드 호출 > 하지만 우리는 이 부분을 수정해야겠지..

@@ -2,6 +2,8 @@ package com.example.project;
 
 import android.content.Context;
 import android.speech.tts.TextToSpeech;
+import android.util.Log;
+
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.Locale;
 

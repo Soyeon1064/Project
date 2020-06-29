@@ -9,10 +9,16 @@ import android.view.View;
 
 public class MembershipActivity extends AppCompatActivity {
 
+    //TTS 사용하고자 한다면 1) 클래스 객체 선언
+    private TTSAdapter tts;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_membership);
+
+        tts = new TTSAdapter(this, "각 편의점별 멤버십 정보를 알려드립니다... GS25. CU. 세븐 일레븐. 이마트 24 순으로 배치되어 있습니다.");
+
     }
 
     //GS 눌렀을 때 -> GSMembershipCategoryActivity로 이동

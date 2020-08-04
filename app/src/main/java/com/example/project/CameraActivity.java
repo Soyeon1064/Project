@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.Surface;
@@ -41,8 +42,15 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class CameraActivity extends AppCompatActivity {
 
@@ -112,7 +120,8 @@ public class CameraActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
 
-        tts = new TTSAdapter(this,"상품 진열대에서 반 발자국 물러서서 촬영을 진행해 주세요. 화면을 터치하면 촬영이 진행됩니다."); //TTS 사용하고자 한다면 2) 클래스 객체 생성
+        //tts = new TTSAdapter(this,"상품 진열대에서 반 발자국 물러서서 촬영을 진행해 주세요. 화면을 터치하면 촬영이 진행됩니다."); //TTS 사용하고자 한다면 2) 클래스 객체 생성
+        tts = new TTSAdapter(this,"화면을 터치하면 촬영이 진행됩니다."); //TTS 사용하고자 한다면 2) 클래스 객체 생성
 
         //효과음 설정
         //롤리팝 이상 버전일 경우 > 우리는 여기에 해당
@@ -160,8 +169,73 @@ public class CameraActivity extends AppCompatActivity {
 //                }
 
                 takePicture(); //사진을 촬영 설정하는 메소드 호출
+                retrofitTest();
+
+
+
             }
         });
+    }
+
+    private void retrofitTest() {
+        Retrofit retrofit = new Retrofit.Builder(). baseUrl("http://jsonplaceholder.typicode.com").addConverterFactory(GsonConverterFactory.create()).build();
+
+        //@GET/@POST 설정해 놓은 인터페이스와 연결
+        RetrofitService retrofitService = retrofit.create(RetrofitService.class);
+
+        //userId가 1이라는 데이터의 정보를 얻어온다.
+        retrofitService.getData("1").enqueue(new Callback<List<Post>>() {
+
+            //응답 성공했을 때
+            @Override
+            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+                if(response.isSuccessful()){
+                    List<Post> data = response.body();
+                    Log.d("상황: ","GET 성공");
+                    //userId가 1인 정보들 중에서 첫 번째 title을 출력시켜본다.
+                    Log.d("상황: ", data.get(0).getTitle());
+                }
+            }
+
+            //응답 실패했을 때
+            @Override
+            public void onFailure(Call<List<Post>> call, Throwable t) {
+                Log.d("상황: ","GET 실패");
+                t.printStackTrace();
+            }
+        });
+
+        HashMap<String, Object> input = new HashMap<>();
+        input.put("userId", 1);
+        input.put("title", "타이틀 POST");
+        input.put("body", "바디 POST");
+        retrofitService.postData(input).enqueue(new Callback<Post>() {
+            @Override
+            public void onResponse(@NonNull Call<Post> call, @NonNull Response<Post> response) {
+                if (response.isSuccessful()) {
+                    Post data = response.body();
+                    if (data != null) {
+                        Log.d("상황: ", data.getUserId() + "");
+                        Log.d("상황: ", data.getId() + "");
+                        Log.d("상황: ", data.getTitle()+"");
+                        Log.d("상황: ", data.getBody()+"");
+                        Log.e("상황: ", "======================================");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Post> call, @NonNull Throwable t) {
+                        Log.d("상황: ", "POST 실패");
+            }
+        });
+
+    }
+
+
+
+    //사진 촬영 후 상품 정보를 불러오는 메소드
+    private void getProductInfo() {
     }
 
     //사진 찍는 메소드

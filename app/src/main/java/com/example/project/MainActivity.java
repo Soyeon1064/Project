@@ -26,10 +26,11 @@ public class MainActivity extends AppCompatActivity {
     //Button-> 앱 도움말 버튼 클릭
     public void onTTSButtonClicked(View view) {
 
-        introduce="시각 장애인을 대상으로 \n" +
-                "편의점을 쉽게 사용할 수 있도록 만든 어플 니편 내편 입니다. 아래 버튼에는 행사 상품을 알려주는 상품 인식. \n" +
-                "멤버십 정보. 가까운 편의점 찾기 순서로 배치되어 있습니다.";
+//        introduce="시각 장애인을 대상으로 \n" +
+//                "편의점을 쉽게 사용할 수 있도록 만든 어플 니편 내편 입니다. 아래 버튼에는 행사 상품을 알려주는 상품 인식. \n" +
+//                "멤버십 정보. 가까운 편의점 찾기 순서로 배치되어 있습니다.";
 
+        introduce = "상품인식. 멤버십 정보. 가까운 편의점 찾기 순서로 배치되어 있습니다.";
         tts = new TTSAdapter(this,introduce); //TTS 사용하고자 한다면 2) 클래스 객체 생성
     }
 

@@ -17,7 +17,8 @@ public class MembershipActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_membership);
 
-        tts = new TTSAdapter(this, "각 편의점별 멤버십 정보를 알려드립니다... GS25. CU. 세븐 일레븐. 이마트 24 순으로 배치되어 있습니다.");
+        //tts = new TTSAdapter(this, "각 편의점별 멤버십 정보를 알려드립니다... GS25. CU. 세븐 일레븐. 이마트 24 순으로 배치되어 있습니다.");
+        tts = new TTSAdapter(this, "GS25. CU. 세븐 일레븐. 이마트 24 순으로 배치되어 있습니다.");
 
     }
 
@@ -46,5 +47,17 @@ public class MembershipActivity extends AppCompatActivity {
     }
 
 
+
+    //액티비티 중지되면 실행되는 메소드
+    //다른 액티비티 화면에 가려졌을시 음성 종료
+    protected void onPause() {
+        super.onPause();
+        tts.ttsShutdown();
+    }
+
+    protected void onStop() {
+        super.onStop();
+        tts.ttsShutdown();
+    }
 
 }

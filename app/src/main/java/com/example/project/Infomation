@@ -1,0 +1,18 @@
+<서버와 주고받을 내용들>
+
+@GET
+서버 > 안드로이드(클라이언트)
+1. 할인 상품 정보 (productInfo)
+    -CameraActivity
+
+2. 멤버십 정보 (membershipInfo)
+    -MembershipActivity
+
+@POST
+안드로이드(클라이언트) > 서버
+1. 촬영한 이미지 전송 (imageData)
+    -CameraActivity
+
+
+
+

@@ -46,16 +46,15 @@
 
     <TextView
         android:id="@+id/textView2"
-        android:layout_width="404dp"
-        android:layout_height="55dp"
-        android:layout_marginTop="580dp"
+        android:layout_width="442dp"
+        android:layout_height="33dp"
+        android:layout_marginTop="640dp"
         android:fontFamily="@font/font2"
         android:text="Copyright 2020. 미니 냉장고 All rights reserved."
         android:textColor="@color/yellow"
-        android:textSize="16dp"
+        android:textSize="18dp"
         android:textStyle="italic"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

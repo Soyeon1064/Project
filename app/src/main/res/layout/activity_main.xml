@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".MainActivity">
 
     <FrameLayout
         android:id="@+id/frameLayout"
@@ -25,19 +25,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:fontFamily="@font/font1"
-                android:text="     음  성\n사용 설명서"
-                android:textColor="#ffffff"
-                android:textSize="48dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.891"
-                app:layout_constraintStart_toStartOf="parent" />
 
             <ImageView
                 android:id="@+id/imageView"
@@ -49,6 +36,21 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.48000002"
                 app:srcCompat="@drawable/notice_icon" />
+
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:fontFamily="@font/font1"
+                android:text="     음  성\n사용 설명서"
+                android:textColor="#ffffff"
+                android:textSize="48dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.878"
+                app:layout_constraintStart_toStartOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 
@@ -83,24 +85,24 @@
 
             <TextView
                 android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="168dp"
+                android:layout_width="265dp"
+                android:layout_height="69dp"
+                android:layout_marginStart="175dp"
                 android:layout_marginEnd="60dp"
+                android:layout_marginBottom="12dp"
                 android:fontFamily="@font/font1"
                 android:text="상 품  인 식"
                 android:textColor="@color/yellow"
                 android:textSize="50dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.395"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.618" />
+                app:layout_constraintVertical_bias="0.554" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </FrameLayout>
-
 
 
     <FrameLayout
@@ -137,13 +139,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="192dp"
+                android:layout_marginBottom="12dp"
                 android:fontFamily="@font/font1"
                 android:text="멤 버 십\n  정  보"
                 android:textColor="@color/darkblue"
                 android:textSize="50dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintHorizontal_bias="0.673"
                 app:layout_constraintStart_toStartOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -182,7 +185,7 @@
                 android:id="@+id/textView4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="192dp"
+                android:layout_marginStart="252dp"
                 android:fontFamily="@font/font1"
                 android:text="가 까 운\n편 의 점"
                 android:textColor="#ffffff"
@@ -190,7 +193,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1.0" />
+                app:layout_constraintVertical_bias="0.466" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 </LinearLayout>

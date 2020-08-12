@@ -128,10 +128,7 @@ public class CameraActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             soundPool = new SoundPool.Builder().build(); //SoundPool 객체 빌더에 빌드하기
         }else{ //롤리팝 이하 버전일 경우
-            // new SoundPool(1번,2번,3번)
-            // 1번 - 음악 파일 갯수
-            // 2번 - 스트림 타입
-            // 3번 - 음질
+            // new SoundPool(1번,2번,3번) / 1번 - 음악 파일 갯수 / 2번 - 스트림 타입 / 3번 - 음질
             soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC,0);
         }
 
@@ -188,7 +185,7 @@ public class CameraActivity extends AppCompatActivity {
 
             //응답 성공했을 때
             @Override
-            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+            public void onResponse(@NonNull Call<List<Post>> call, @NonNull Response<List<Post>> response) {
                 if(response.isSuccessful()){
                     List<Post> data = response.body();
                     Log.d("상황: ","GET 성공");

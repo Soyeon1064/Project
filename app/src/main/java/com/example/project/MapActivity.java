@@ -45,7 +45,7 @@ import java.util.Locale;
 public class MapActivity extends AppCompatActivity {
 
     private TTSAdapter tts;
-    String itemInfoString;
+    String itemInfoString=null;
 
     //권한 관련
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;
@@ -103,15 +103,15 @@ public class MapActivity extends AppCompatActivity {
         ////리니어 레이아웃에 지도 연결
         linearLayout.addView(tMapView);
 
-        //sleep을 걸지 않으면 결과물을 너무 빨리 불러들여 itemInfoString이 null값이 되는 문제가 발생하여서
-        //우선 sleep을 걸어 결과물을 출력하도록 하였다.
-        try {
-            Thread.sleep(3000);
-            String text = "가장 가까운 편의점은 "+itemInfoString+"입니다.";
-            tts = new TTSAdapter(context, text);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        //sleep을 걸지 않으면 결과물을 너무 빨리 불러들여 itemInfoString이 null값이 되는 문제가 발생하여서
+//        //우선 sleep을 걸어 결과물을 출력하도록 하였다.
+//        try {
+//            Thread.sleep(3000);
+//            String text = "가장 가까운 편의점은 "+itemInfoString+"입니다.";
+//            tts = new TTSAdapter(context, text);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
     }
 
@@ -235,7 +235,6 @@ public class MapActivity extends AppCompatActivity {
 
                         Log.d("상황> ",itemInfoString+"setText 메소드 호출");
                         textView.setText(itemInfoString);
-
 
                     }
                 }catch(Exception e) {
@@ -427,6 +426,17 @@ public class MapActivity extends AppCompatActivity {
 
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
                 || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
+
+    //전체 화면 버튼을 눌렀을 경우 음성으로 출력하는 메소드
+    public void OnResultButtonClicked(View view) {
+
+        if(itemInfoString!=null){
+            tts = new TTSAdapter(context, "가장 가까운 편의점은 "+itemInfoString+"입니다.");
+        }else{
+            tts = new TTSAdapter(context, "오류입니다. 다시 한 번 실행해 주세요.");
+        }
     }
 
 //    //어플이 꺼지거나 중단 된다면 TTS 어댑터의 ttsShutdown() 메소드 호출하기

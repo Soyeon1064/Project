@@ -1,18 +1,16 @@
 package com.example.project;
 
-import android.content.Context;
-import android.speech.tts.TextToSpeech;
-import android.util.Log;
-
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.Locale;
+import android.content.Context;
+import android.speech.tts.TextToSpeech;
 
 //TTS를 편하게 사용하기 위한 TTSAdapter 클래스
 public class TTSAdapter extends AppCompatActivity implements TextToSpeech.OnInitListener {
     private TextToSpeech tts; //TTS 객체
     private String content;  //출력물
 
-    //생성자
+    //생성자를 통해 음성 출력물을 받아온다
     public TTSAdapter(Context context, String content){
         this.content = content;
 

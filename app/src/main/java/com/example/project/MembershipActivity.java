@@ -18,7 +18,7 @@ public class MembershipActivity extends AppCompatActivity {
         setContentView(R.layout.activity_membership);
 
         //tts = new TTSAdapter(this, "각 편의점별 멤버십 정보를 알려드립니다... GS25. CU. 세븐 일레븐. 이마트 24 순으로 배치되어 있습니다.");
-        tts = new TTSAdapter(this, "GS25. CU. 세븐 일레븐. 이마트 24 순으로 배치되어 있습니다.");
+        tts = new TTSAdapter(this, "지에쓰25. 씨유. 세븐 일레븐. 이마트 24 순으로 배치되어 있습니다.");
 
     }
 

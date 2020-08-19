@@ -15,27 +15,22 @@
         android:background="@color/darkblue">
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/button1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#00FFFFFF" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <ImageView
                 android:id="@+id/imageView"
-                android:layout_width="430dp"
-                android:layout_height="105dp"
-                android:paddingRight="10dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.75"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="95dp"
+                android:layout_centerInParent="true"
                 app:srcCompat="@drawable/emart" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </RelativeLayout>
     </FrameLayout>
 
     <FrameLayout
@@ -51,7 +46,7 @@
             android:layout_height="match_parent"
             android:background="#00FFFFFF" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -61,6 +56,7 @@
                 android:layout_height="83dp"
                 android:fontFamily="@font/font1"
                 android:gravity="center"
+                android:layout_centerInParent="true"
                 android:text="제 휴 멤 버 십"
                 android:textColor="@color/darkblue"
                 android:textSize="50dp"
@@ -69,7 +65,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.503" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </RelativeLayout>
 
     </FrameLayout>
 
@@ -86,7 +82,7 @@
             android:layout_height="match_parent"
             android:background="#00FFFFFF"/>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -95,6 +91,7 @@
                 android:layout_width="319dp"
                 android:layout_height="85dp"
                 android:fontFamily="@font/font1"
+                android:layout_centerInParent="true"
                 android:text="자 체 멤 버 십"
                 android:textColor="#ffffff"
                 android:textSize="50dp"
@@ -103,6 +100,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.506" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </RelativeLayout>
     </FrameLayout>
 </LinearLayout>

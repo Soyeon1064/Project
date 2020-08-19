@@ -15,43 +15,52 @@
         android:background="@color/yellow">
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/button1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#00FFFFFF"
             android:onClick="onTTSButtonClicked" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
 
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="120dp"
-                android:layout_height="110dp"
-                android:layout_marginStart="16dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.48000002"
-                app:srcCompat="@drawable/notice_icon" />
-
-
-            <TextView
-                android:id="@+id/textView"
+            <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:fontFamily="@font/font1"
-                android:text="     음  성\n사용 설명서"
-                android:textColor="#ffffff"
-                android:textSize="48dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.878"
-                app:layout_constraintStart_toStartOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="110dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_centerInParent="true"
+                    app:srcCompat="@drawable/notice_icon" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="3">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:fontFamily="@font/font1"
+                    android:layout_centerInParent="true"
+                    android:text="     음  성\n사용 설명서"
+                    android:textColor="#ffffff"
+                    android:textSize="48dp"
+                    />
+
+            </RelativeLayout>
+        </LinearLayout>
     </FrameLayout>
 
     <FrameLayout
@@ -68,40 +77,44 @@
             android:background="#00FFFFFF"
             android:onClick="onButtonCameraClicked" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/imageView2"
-                android:layout_width="120dp"
-                android:layout_height="110dp"
-                android:layout_marginStart="16dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.493"
-                app:srcCompat="@drawable/camera_icon" />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
 
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="265dp"
-                android:layout_height="69dp"
-                android:layout_marginStart="175dp"
-                android:layout_marginEnd="60dp"
-                android:layout_marginBottom="12dp"
-                android:fontFamily="@font/font1"
-                android:text="상 품  인 식"
-                android:textColor="@color/yellow"
-                android:textSize="50dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.554" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <ImageView
+                    android:id="@+id/imageView2"
+                    android:layout_width="120dp"
+                    android:layout_height="110dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_centerInParent="true"
+                    app:srcCompat="@drawable/camera_icon" />
 
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="3">
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="265dp"
+                    android:layout_height="69dp"
+                    android:fontFamily="@font/font1"
+                    android:layout_centerInParent="true"
+                    android:text="상 품  인 식"
+                    android:textColor="@color/yellow"
+                    android:textSize="50dp"
+                    />
+
+            </RelativeLayout>
+        </LinearLayout>
     </FrameLayout>
 
 
@@ -119,37 +132,42 @@
             android:background="#00FFFFFF"
             android:onClick="onMembershipButtonClicked" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/imageView3"
-                android:layout_width="120dp"
-                android:layout_height="110dp"
-                android:layout_marginStart="16dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.53"
-                app:srcCompat="@drawable/membership_icon" />
-
-            <TextView
-                android:id="@+id/textView3"
+            <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="192dp"
-                android:layout_marginBottom="12dp"
-                android:fontFamily="@font/font1"
-                android:text="멤 버 십\n  정  보"
-                android:textColor="@color/darkblue"
-                android:textSize="50dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.673"
-                app:layout_constraintStart_toStartOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:layout_height="match_parent"
+                android:layout_weight="1">
 
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="120dp"
+                    android:layout_height="110dp"
+                    android:layout_centerInParent="true"
+                    app:srcCompat="@drawable/membership_icon" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="3">
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:fontFamily="@font/font1"
+                    android:text="멤 버 십\n  정  보"
+                    android:textColor="@color/darkblue"
+                    android:textSize="50dp" />
+
+            </RelativeLayout>
+        </LinearLayout>
     </FrameLayout>
 
     <FrameLayout
@@ -166,34 +184,42 @@
             android:background="#00FFFFFF"
             android:onClick="onLocationButtonClicked" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/imageView4"
-                android:layout_width="120dp"
-                android:layout_height="110dp"
-                android:layout_marginStart="16dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.53"
-                app:srcCompat="@drawable/map_icon" />
-
-            <TextView
-                android:id="@+id/textView4"
+            <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="252dp"
-                android:fontFamily="@font/font1"
-                android:text="가 까 운\n편 의 점"
-                android:textColor="#ffffff"
-                android:textSize="50dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.466" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="120dp"
+                    android:layout_height="110dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_centerInParent="true"
+                    app:srcCompat="@drawable/map_icon" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="3">
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:fontFamily="@font/font1"
+                    android:text="가 까 운\n편 의 점"
+                    android:textColor="#ffffff"
+                    android:textSize="50dp" />
+
+            </RelativeLayout>
+        </LinearLayout>
     </FrameLayout>
 </LinearLayout>

@@ -1,62 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/darkblue"
+    android:orientation="vertical"
     tools:context=".SplashActivity">
 
 
-    <ImageView
-        android:id="@+id/imageView5"
-        android:layout_width="354dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="120dp"
-        android:src="@drawable/logo01"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.28"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+       >
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="203dp"
-        android:layout_height="185dp"
-        android:layout_marginBottom="176dp"
-        android:src="@mipmap/ic_launcher_round"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="339dp"
+            android:layout_height="23dp"
+            android:layout_marginTop="112dp"
+            android:fontFamily="@font/font2"
+            android:text="네 편의점 내 편의점, 우리 모두가 편리한"
+            android:textColor="@color/yellow"
+            android:textSize="20dp"
+            android:textStyle="italic"
+            android:layout_marginLeft="10dp" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="339dp"
-        android:layout_height="23dp"
-        android:layout_marginTop="112dp"
-        android:fontFamily="@font/font2"
-        android:text="네 편의점 내 편의점, 우리 모두가 편리한"
-        android:textColor="@color/yellow"
-        android:textSize="20dp"
-        android:textStyle="italic"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.222"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="354dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="120dp"
+            android:src="@drawable/logo01"
+            android:layout_marginLeft="10dp"
+            />
+    </RelativeLayout>
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="442dp"
-        android:layout_height="33dp"
-        android:layout_marginTop="640dp"
-        android:fontFamily="@font/font2"
-        android:text="Copyright 2020. 미니 냉장고 All rights reserved."
-        android:textColor="@color/yellow"
-        android:textSize="18dp"
-        android:textStyle="italic"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="203dp"
+            android:layout_height="185dp"
+            android:layout_marginBottom="190dp"
+            android:src="@mipmap/ic_launcher_round"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="50dp"
+            android:fontFamily="@font/font2"
+            android:text="Copyright 2020. 미니 냉장고 All rights reserved."
+            android:textColor="@color/yellow"
+            android:textSize="16dp"
+            android:textStyle="italic" />
+    </RelativeLayout>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

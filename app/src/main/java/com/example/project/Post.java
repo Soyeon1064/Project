@@ -2,6 +2,10 @@ package com.example.project;
 
 import com.google.gson.annotations.SerializedName;
 
+
+//테스트용 Post 클래스
+//삭제하지 X
+
 //JSON 데이터를 class로 받아오기 위한 작업.
 //데이터 key값들을 변수화 한다.
 public class Post {

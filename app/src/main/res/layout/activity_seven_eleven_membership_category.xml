@@ -15,28 +15,23 @@
         android:background="@color/darkblue">
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/button1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#00FFFFFF"/>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <ImageView
                 android:id="@+id/imageView"
-                android:layout_width="496dp"
-                android:layout_height="253dp"
-                android:layout_marginStart="16dp"
-
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.735"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="fill"
+                android:layout_centerInParent="true"
                 app:srcCompat="@drawable/seveneleven" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </RelativeLayout>
     </FrameLayout>
 
     <FrameLayout
@@ -52,7 +47,7 @@
             android:layout_height="match_parent"
             android:background="#00FFFFFF" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -62,6 +57,7 @@
                 android:layout_height="69dp"
                 android:fontFamily="@font/font1"
                 android:gravity="center"
+                android:layout_centerInParent="true"
                 android:text="제 휴 멤 버 십"
                 android:textColor="@color/darkblue"
                 android:textSize="50dp"
@@ -70,7 +66,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.506" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </RelativeLayout>
     </FrameLayout>
 
     <FrameLayout
@@ -86,7 +82,7 @@
             android:layout_height="match_parent"
             android:background="#00FFFFFF" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -95,6 +91,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/font1"
+                android:layout_centerInParent="true"
                 android:text="제 휴 카 드"
                 android:textColor="#ffffff"
                 android:textSize="50dp"
@@ -102,7 +99,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </RelativeLayout>
 
     </FrameLayout>
 

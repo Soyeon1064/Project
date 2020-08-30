@@ -18,6 +18,7 @@ public class MembershipActivity extends AppCompatActivity {
         setContentView(R.layout.activity_membership);
 
         tts = TTSAdapter.getInstance(this);  // onCreate 에서 한 번만 호출하면 됨
+
         tts.speak("지에쓰25. 씨유. 세븐 일레븐. 이마트 24 순으로 배치되어 있습니다.");
     }
 
@@ -44,7 +45,6 @@ public class MembershipActivity extends AppCompatActivity {
         Intent intent = new Intent(this,EmartMembershipCategoryActivity.class);
         startActivity(intent);
     }
-
 
 
     //액티비티 중지되면 실행되는 메소드

@@ -31,7 +31,7 @@ public class TTSAdapter extends AppCompatActivity implements TextToSpeech.OnInit
     public void onInit(int status) {
         if (status != TextToSpeech.ERROR) { //TTS의 상태가 정상이라면
             tts.setLanguage(Locale.KOREAN); //언어-한국어 설정
-            tts.setPitch(0.9f); //음성 톤 (1.0f 기본)
+            tts.setPitch(0.8f); //음성 톤 (1.0f 기본)
             tts.setSpeechRate(1.0f); //읽는 속도 (1.0f 기본)
         }
     }

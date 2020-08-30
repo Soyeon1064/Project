@@ -70,14 +70,14 @@
     </FrameLayout>
 
     <FrameLayout
-        android:id="@+id/frameLayout5"
+        android:id="@+id/frameLayout3"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:background="@color/darkblue">
 
         <Button
-            android:id="@+id/button5"
+            android:id="@+id/button3"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#00FFFFFF"/>

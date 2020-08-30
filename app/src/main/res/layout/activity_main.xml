@@ -34,11 +34,11 @@
 
                 <ImageView
                     android:id="@+id/imageView"
-                    android:layout_width="wrap_content"
+                    android:layout_width="120dp"
                     android:layout_height="110dp"
-                    android:layout_marginStart="16dp"
                     android:layout_centerInParent="true"
-                    app:srcCompat="@drawable/notice_icon" />
+                    android:layout_marginStart="16dp"
+                    app:srcCompat="@drawable/icon_question" />
 
             </RelativeLayout>
 
@@ -93,7 +93,7 @@
                     android:layout_height="110dp"
                     android:layout_marginStart="16dp"
                     android:layout_centerInParent="true"
-                    app:srcCompat="@drawable/camera_icon" />
+                    app:srcCompat="@drawable/icon_camera" />
 
             </RelativeLayout>
 
@@ -147,7 +147,7 @@
                     android:layout_width="120dp"
                     android:layout_height="110dp"
                     android:layout_centerInParent="true"
-                    app:srcCompat="@drawable/membership_icon" />
+                    app:srcCompat="@drawable/icon_card" />
 
             </RelativeLayout>
 
@@ -200,7 +200,7 @@
                     android:layout_height="110dp"
                     android:layout_marginStart="16dp"
                     android:layout_centerInParent="true"
-                    app:srcCompat="@drawable/map_icon" />
+                    app:srcCompat="@drawable/icon_map" />
 
             </RelativeLayout>
 

@@ -14,16 +14,17 @@
         android:background="@color/yellow">
 
 
-        <Button
-            android:id="@+id/button"
+        <ImageButton
+            android:id="@+id/imageButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textSize="80dp"
-            android:text="GS25"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:background="#00000000"
-            android:textColor="#ffffff"/>
-
-
+            android:onClick="onButtonGSClicked"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/gs25"
+            tools:ignore="OnClick" />
     </FrameLayout>
 
     <FrameLayout
@@ -32,31 +33,32 @@
         android:layout_weight="1"
         android:background="@color/darkblue">
 
-        <Button
-            android:id="@+id/button1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textSize="80dp"
-            android:text="CU"
+        <ImageButton
+            android:id="@+id/imageButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:background="#00000000"
-            android:textColor="@color/yellow"/>
+            android:onClick="onButtonCUClicked"
+            app:srcCompat="@drawable/cu"
+            tools:ignore="OnClick" />
     </FrameLayout>
-
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:background="@color/yellow">
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textSize="60dp"
-            android:text="세븐일레븐"
-            android:background="#00000000"
-            android:textColor="@color/darkblue"/>
 
+        <ImageButton
+            android:id="@+id/imageButton3"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="#00000000"
+            android:scaleType="fitXY"
+            android:onClick="onButtonSevenElevenClicked"
+            app:srcCompat="@drawable/seveneleven"
+            tools:ignore="OnClick" />
     </FrameLayout>
 
     <FrameLayout
@@ -65,14 +67,15 @@
         android:layout_weight="1"
         android:background="@color/darkblue">
 
-        <Button
-            android:id="@+id/button3"
+        <ImageButton
+            android:id="@+id/imageButton4"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textSize="60dp"
-            android:text="Emart24"
+            android:layout_gravity="center"
             android:background="#00000000"
-            android:textColor="#ffffff"/>
+            android:onClick="onButtonEmartClicked"
+            app:srcCompat="@drawable/emart"
+            tools:ignore="OnClick" />
     </FrameLayout>
 
 

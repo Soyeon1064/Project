@@ -12,6 +12,8 @@ import androidx.core.content.ContextCompat;
 
 import com.skt.Tmap.TMapView;
 
+//github test
+
 public class GpsTracker implements LocationListener {
     private final Context mContext;
     Location location;

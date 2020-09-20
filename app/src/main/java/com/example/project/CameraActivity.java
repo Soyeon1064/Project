@@ -3,12 +3,12 @@ package com.example.project;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.ImageFormat;
+import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -28,7 +28,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.text.TextUtils;
 import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
@@ -37,14 +36,24 @@ import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.skt.Tmap.TMapData;
+import com.skt.Tmap.TMapMarkerItem;
+import com.skt.Tmap.TMapPOIItem;
+import com.skt.Tmap.TMapPoint;
+import com.skt.Tmap.TMapPolyLine;
+import com.skt.Tmap.TMapView;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -60,7 +69,27 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 public class CameraActivity extends AppCompatActivity {
+
+    //권한 관련
+    private static final int GPS_ENABLE_REQUEST_CODE = 2001;
+    private static final int PERMISSIONS_REQUEST_CODE = 100;
+    String[] REQUIRED_PERMISSIONS  = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+
+    double latitude;;
+    double longitude;
+    Context context;
+    GpsTracker gps_tracker = null;
+    TMapPoint tmappoint; //현재 위치 포인트
+    TMapView tMapView = null;
+    String cvs_name = "";
+    boolean cvs_found = false;
 
     //TTS 사용하고자 한다면 1) 클래스 객체 선언
     private TTSAdapter tts;
@@ -71,8 +100,7 @@ public class CameraActivity extends AppCompatActivity {
     //버튼, 텍스쳐뷰 레이아웃 변수
     private Button btnCapture;
     private TextureView textureView;
-    private String TAG = "Camera Activity"; // tag 지정하기
-
+    private String TAG = "Camera Activity";
 
     //이미지 출력 상태 확인
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
@@ -127,13 +155,14 @@ public class CameraActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
 
+        tMapView = new TMapView(this);
+        tMapView.setHttpsMode(true);
+
+        //지도 초기 설정
+        tMapView.setSKTMapApiKey("l7xx8af54a909a6e4bb8a498c7628aae0720");  // H
+
         tts = TTSAdapter.getInstance(this);
-
-        //권한 확인 메소드 호출
-        if(checkPermission()==true){
-            tts.speak("화면을 터치하면 촬영이 진행됩니다.");
-        }
-
+        tts.speak("화면을 터치하면 촬영이 진행됩니다.");
 
         sManager = SoundManager.getInstance();
 
@@ -160,49 +189,65 @@ public class CameraActivity extends AppCompatActivity {
 
                 takePicture(); //사진을 촬영 설정하는 메소드 호출
 
-                //이미지 처리 결과 얻어올 메소드인데 필요없겠군
-                retrofitTest();
+//                retrofitTest();
             }
         });
     }
 
-    //메인 화면에서 권한 받아 왔는지 확인하는 메소드
-    private boolean checkPermission() {
-
-        //카메라, 저장 권한 확인할 String 값
-        String tmp="";
-
-        //카메라 권한 확인 > 권한 승인되지 않으면 tmp에 권한 내용 저장
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED){
-            tmp += Manifest.permission.CAMERA+" ";
-        }
-
-        //카메라 저장 권한 확인
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
-            tmp += Manifest.permission.WRITE_EXTERNAL_STORAGE;
-        }
-
-        if(TextUtils.isEmpty(tmp)==false){
-            //권한 요청하기
-            tts.speak("카메라 권한을 허용해 주세요.");
-            ActivityCompat.requestPermissions(this, tmp.trim().split(" "), 1);
-            return false;
-        }else{
-            tts.speak("화면을 터치하면 촬영이 진행됩니다.");
-            Log.d("상황: ","상품 인식 메뉴로 들어와서 권한 허용됨을 확인함.");
-            return true;
-        }
-    }
-
-    //@GET 연습 용 사진 결과물의 정보를 불러올 것임. -> 필요 없는데 일단 보관
-    private void retrofitTest() {
-        Retrofit retrofit = new Retrofit.Builder(). baseUrl("http://18.222.224.247:8000/myapp/").addConverterFactory(GsonConverterFactory.create()).build();
+/*    private void retrofitTest() {
+        Retrofit retrofit = new Retrofit.Builder(). baseUrl("http://jsonplaceholder.typicode.com").addConverterFactory(GsonConverterFactory.create()).build();
 
         //@GET/@POST 설정해 놓은 인터페이스와 연결
         RetrofitService retrofitService = retrofit.create(RetrofitService.class);
 
+        //userId가 1이라는 데이터의 정보를 얻어온다.
+        retrofitService.getData("1").enqueue(new Callback<List<Post>>() {
 
-    }
+            //응답 성공했을 때
+            @Override
+            public void onResponse(@NonNull Call<List<Post>> call, @NonNull Response<List<Post>> response) {
+                if(response.isSuccessful()){
+                    List<Post> data = response.body();
+                    Log.d("상황: ","GET 성공");
+                    //userId가 1인 정보들 중에서 첫 번째 title을 출력시켜본다.
+                    Log.d("상황: ", data.get(0).getTitle());
+                }
+            }
+
+            //응답 실패했을 때
+            @Override
+            public void onFailure(Call<List<Post>> call, Throwable t) {
+                Log.d("상황: ","GET 실패");
+                t.printStackTrace();
+            }
+        });
+
+        HashMap<String, Object> input = new HashMap<>();
+        input.put("userId", 1);
+        input.put("title", "타이틀 POST");
+        input.put("body", "바디 POST");
+        retrofitService.postData(input).enqueue(new Callback<Post>() {
+            @Override
+            public void onResponse(@NonNull Call<Post> call, @NonNull Response<Post> response) {
+                if (response.isSuccessful()) {
+                    Post data = response.body();
+                    if (data != null) {
+                        Log.d("상황: ", data.getUserId() + "");
+                        Log.d("상황: ", data.getId() + "");
+                        Log.d("상황: ", data.getTitle()+"");
+                        Log.d("상황: ", data.getBody()+"");
+                        Log.e("상황: ", "======================================");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Post> call, @NonNull Throwable t) {
+                Log.d("상황: ", "POST 실패");
+            }
+        });
+
+    }*/
 
 
 
@@ -253,7 +298,7 @@ public class CameraActivity extends AppCompatActivity {
             //기본 장치 확인
             int rotation = getWindowManager().getDefaultDisplay().getRotation();
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
-
+            //captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, 90);
             //파일 저장 설정 고유 식별자.jpg로 파일 이름 설정해서 생성
             file = new File(Environment.getExternalStorageDirectory()+"/"+UUID.randomUUID().toString()+".jpg");
             //이미지 읽어들이는 리스너
@@ -267,7 +312,8 @@ public class CameraActivity extends AppCompatActivity {
                         byte[] bytes = new byte[buffer.capacity()];
                         buffer.get(bytes);
                         save(bytes);
-                        upload(file); // 파일 업로드
+                        //upload(file);
+                        uploadImage(file);
                     }catch(FileNotFoundException e){
                         e.printStackTrace();
                     }catch(IOException e){
@@ -301,7 +347,7 @@ public class CameraActivity extends AppCompatActivity {
 //                    tts.ttsShutdown();
 //                    playSoundId=soundManager.playSound(0);
                     //저장 되었습니다. 토스트 창
-                    Toast.makeText(CameraActivity.this, "Saved "+file, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(CameraActivity.this, "Saved "+file, Toast.LENGTH_SHORT).show();
                     //다시 촬영할 수 있도록 카메라 화면 보여주는 메소드 호출 > 하지만 우리는 이 부분을 수정해야겠지..
                     //1) 사진을 촬영하면 음성이 출력되기까지 사진 촬영을 못 하게 해야함.
                     createCameraPreview();
@@ -334,28 +380,146 @@ public class CameraActivity extends AppCompatActivity {
 
     }
 
-    //@POST 사진을 서버로 보낼 것임.
-    //이미지 업로드하기
+    //편의점 이름을 cvs_code로 변환(키워드로 변환)
+    private String get_cvs_code(String cvs_info) {
+        String code;
+        if (cvs_info.trim().startsWith("세븐일레븐")) code =  "seven";
+        else if (cvs_info.trim().startsWith("이마트24")) code =  "emart";
+        else if (cvs_info.trim().startsWith("GS25")) code =  "GS";
+        else if (cvs_info.trim().startsWith("CU")) code =  "CU";
+        else code =  "none";
+        Log.d("CameraActivity", "cvs_info:" + cvs_info);
+        Log.d("CameraActivity", "code: " + code);
+        return code;
+    }
+
+    //                                myapp/imageupload version
+    private void uploadImage(final File file) throws java.io.IOException {
+        // FILE: device에서 storage access 권한 허용
+        final String BASE_URL = "http://18.222.224.247:8000";  // aws
+        //final String BASE_URL = "http://10.0.2.2:8000";   // local
+
+        gps_tracker = new GpsTracker(this);
+        latitude = gps_tracker.getLatitude();
+        longitude = gps_tracker.getLongitude();
+//        latitude = 37.3400;
+//        longitude = 127.1153;
+        tmappoint = new TMapPoint(latitude, longitude);
+
+        //"편의점" 키워드로 검색
+        TMapData tMapData = new TMapData();
+        tMapData.findAroundNamePOI(tmappoint, "편의점", new TMapData.FindAroundNamePOIListenerCallback() {
+            @Override
+            public void onFindAroundNamePOI(ArrayList poiItem) {
+                if (poiItem == null) return;
+                TMapPoint my_point = new TMapPoint(latitude, longitude); // 현재 위치
+
+                //제일 가까운 편의점 찾기
+                double min_distance = Double.POSITIVE_INFINITY;
+                int min_index = -1;
+                TMapPOIItem item;
+                for (int i = 0; i < poiItem.size(); i++) {
+                    item = (TMapPOIItem) poiItem.get(i);
+                    double distance = item.getDistance(my_point);
+                    if (distance < min_distance) {
+                        min_distance = distance;
+                        min_index = i;
+                    }
+                }
+
+                //제일 가까운 편의점에서 20m 이내에 있으면 동일 편의점으로 간주
+                if (min_index >= 0 && min_distance <= 20) { // 20 meters
+                    item = (TMapPOIItem) poiItem.get(min_index);
+                    cvs_name = item.getPOIName().toString();
+                } else
+                    cvs_name = "not_found";
+                Log.d("CameraActivity", "편의점이름: " + cvs_name);
+                // String title = cvs_name + "@(" + latitude + "," + longitude + ")";
+
+                //편의점 이름을 cvs_code로 변환해서 title에 저장
+                String title = get_cvs_code(cvs_name);
+                Log.d("CameraActivity", "CVS name: " + title);
+
+                Date now = new Date();
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                RequestBody requestBody = new MultipartBody.Builder()
+                        .setType(MultipartBody.FORM)
+                        .addFormDataPart("title", title)
+                        .addFormDataPart("image", file.getName(), RequestBody.create(MultipartBody.FORM, file))
+                        .addFormDataPart("upload", format.format(now))
+                        .build();
+
+                Request request = new Request.Builder()
+                        .url(BASE_URL + "/myapp/imageupload/")
+                        .post(requestBody)
+                        .build();
+
+                OkHttpClient client = new OkHttpClient.Builder()
+                        .connectTimeout(10, TimeUnit.SECONDS)
+                        .writeTimeout(10, TimeUnit.SECONDS)
+                        .readTimeout(30, TimeUnit.SECONDS)
+                        .retryOnConnectionFailure(true)
+                        .build();
+
+                client.newCall(request).enqueue(new okhttp3.Callback() {
+                    @Override
+                    public void onFailure(okhttp3.Call call, IOException e) {
+                        Log.d(TAG, "POST: Connection error " + e.toString());
+                        final String error_msg = e.toString();
+                        runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(CameraActivity.this, error_msg, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
+                        String TAG = "Camera Activity";
+                        final String response_body = response.body().string();
+                        if (response.isSuccessful()) {
+                            Log.d(TAG,"등록 완료");
+                            //Log.d(TAG, "onResponse: " + response.body().string());
+                            //인식된 text를 tts로 말하기
+                            tts.speak(response_body);
+                        } else {
+                            Log.d(TAG, "Server Response Code : " + response.code());
+                            Log.d(TAG, response.toString());
+                            //Log.d(TAG, call.request().body().toString());
+                            //오류 발생시에 재촬영 요청
+                            tts.speak("오류입니다. 다시 한 번 촬영해 주세요.");
+                        }
+                        runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(CameraActivity.this, response_body, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        System.out.println(response_body);
+                        response.body().close();
+                    }
+                });
+            }
+        });
+    }
+
+
+    //  myapp/upload와 함께 잘 작동함
     private void upload(File file) {
         // FILE: device에서 storage access 권한 허용
         final String BASE_URL = "http://18.222.224.247:8000";  // aws
         //final String BASE_URL = "http://10.0.2.2:8000";   // local
 
-        //Multipart를 사용한 requestBody 만들기
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 //.addFormDataPart("title", "nice photo")
                 .addFormDataPart("file", file.getName(), RequestBody.create(MultipartBody.FORM, file))
-                //파일 여러개 보내고 싶으면 .addFormDataPart 계속 추가하면 됨
                 .build();
 
-        //request 객체 만들기
         Request request = new Request.Builder()
                 .url(BASE_URL + "/myapp/upload/")
                 .post(requestBody)
                 .build();
 
-        //client 객체 만들기
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.SECONDS)
                 .writeTimeout(10, TimeUnit.SECONDS)
@@ -364,7 +528,6 @@ public class CameraActivity extends AppCompatActivity {
                 .build();
 
 
-        //client 객체에게 request를 보내도록 요청하기
         client.newCall(request).enqueue(new okhttp3.Callback() {
             @Override
             public void onFailure(okhttp3.Call call, IOException e) {
@@ -377,7 +540,6 @@ public class CameraActivity extends AppCompatActivity {
                 });
             }
 
-            //서버에서 보내온 response 처리하기
             @Override
             public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
                 String TAG = "Camera Activity";
@@ -395,10 +557,11 @@ public class CameraActivity extends AppCompatActivity {
                         Toast.makeText(CameraActivity.this, response_body, Toast.LENGTH_SHORT).show();
                     }
                 });
+                System.out.println(response_body);
+                response.body().close();
             }
         });
     }
-
 
     //카메라 화면이 보이도록 설정하는 메소드
     private void createCameraPreview() {
@@ -406,9 +569,27 @@ public class CameraActivity extends AppCompatActivity {
             SurfaceTexture texture = textureView.getSurfaceTexture();
             //자바의 검증 기능 assert문. 참, 거짓을 검증한다.
             assert texture != null;
+
             //이미지 크기 설정
             texture.setDefaultBufferSize(imageDimension.getWidth(), imageDimension.getHeight());
+
+            //카메라 화면 회전
+//            // 이미지를 시계방향으로 90도 회전시키면, 똑바로 선 이미지가 됨
+//            int textureViewRotation = -90;
+//            float textureViewWidth = textureView.getWidth();
+//            float textureViewHeight = textureView.getHeight();
+//            if (textureViewWidth == 0 || textureViewHeight == 0 || textureViewRotation == 0) {
+//                textureView.setTransform(null);
+//            } else {
+//                Matrix transformMatrix = new Matrix();
+//                float pivotX = textureViewWidth / 2;
+//                float pivotY = textureViewHeight / 2;
+//                transformMatrix.postRotate(textureViewRotation, pivotX, pivotY);
+//                textureView.setTransform(transformMatrix);
+//            }
+
             Surface surface = new Surface(texture);
+
             captureRequestBuilder = cameraDevice.createCaptureRequest(cameraDevice.TEMPLATE_PREVIEW);
             captureRequestBuilder.addTarget(surface);
 
@@ -518,7 +699,6 @@ public class CameraActivity extends AppCompatActivity {
         }
     }
 
-
     //다른 액티비티 활성화 되었다가 다시 this 액티비티 활성화 되면 호출되는 메소드
     @Override
     protected void onResume() {
@@ -553,6 +733,7 @@ public class CameraActivity extends AppCompatActivity {
     //어플이 꺼지거나 중단 된다면 TTS 어댑터의 ttsShutdown() 메소드 호출하기
     protected void onDestroy() {
         super.onDestroy();
+//        stopBackgoundThread(); //이건 CameraActivity에서만 쓰는 메소드
 //        tts.ttsShutdown();
         tts.stop();
     }
@@ -568,7 +749,24 @@ public class CameraActivity extends AppCompatActivity {
 
     protected void onStop() {
         super.onStop();
+        //상품인식 화면 나가면 카메라 끄기
+        cameraDevice.close();
+        //stopBackgoundThread(); //이건 CameraActivity에서만 쓰는 메소드
         tts.stop();
     }
+
+//    //액티비티 중지되면 실행되는 메소드
+//    //다른 액티비티 화면에 가려졌을시 음성 종료
+//    protected void onPause() {
+//        super.onPause();
+//        stopBackgoundThread(); //이건 CameraActivity에서만 쓰는 메소드
+//        tts.ttsShutdown();
+//    }
+//
+//    protected void onStop() {
+//        super.onStop();
+//        tts.ttsShutdown();
+//    }
+//    shutdown 시키면 tts를 완전히 꺼버리는 것이기 때문에 다음에 tts를 부를 때 처음부터 다시 연결시커야 함
 
 }

@@ -12,25 +12,32 @@ import androidx.core.content.ContextCompat;
 
 import com.skt.Tmap.TMapView;
 
-//github test
-
 public class GpsTracker implements LocationListener {
     private final Context mContext;
-    Location location;
+    Location location = null;      // default location
     double latitude;
     double longitude;
     TMapView tMapView;
+    boolean tracking = false;
 
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
     //    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
     private static final long MIN_TIME_BW_UPDATES = 1000 * 2 * 1;  // 2 seconds
     protected LocationManager locationManager;
 
-    //GpsTracker에서 위치를 받아서 TMapView 이미지에 위치 변경을 위해서 추가
+    //GpsTracker에서 위치를 받아오기(CameraActivity에서 사용)
+    public GpsTracker(Context context) {
+        this.mContext = context;
+        getLocation();
+        tracking = false;
+    }
+
+    //GpsTracker에서 위치를 받아서 TMapView 이미지에 위치 변경(MapActivity에서 사용)
     public GpsTracker(Context context, TMapView tMapView) {
         this.mContext = context;
         this.tMapView = tMapView;
         getLocation();
+        tracking = true;
     }
 
 
@@ -43,17 +50,22 @@ public class GpsTracker implements LocationListener {
 
 
             if (!isGPSEnabled && !isNetworkEnabled) {
-                Log.i("GpsTracker", "GPS is not available");
+                Log.d("GpsTracker", "GPS is not available");
             } else {
+                Log.d("GpsTracker", "GPS is available");
                 int hasFineLocationPermission = ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION);
                 int hasCoarseLocationPermission = ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION);
 
                 if (hasFineLocationPermission == PackageManager.PERMISSION_GRANTED &&
                         hasCoarseLocationPermission == PackageManager.PERMISSION_GRANTED) {
                     ;
+                    Log.d("GpsTracker", "Permission granted");
                 }
-                else
+                else {
+                    Log.d("GpsTracker", "Permission NOT granted");
                     return null;
+                }
+
 
                 if (isNetworkEnabled) {
                     locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
@@ -124,8 +136,10 @@ public class GpsTracker implements LocationListener {
         this.location = location;
         this.latitude = location.getLatitude();
         this.longitude = location.getLongitude();
-        tMapView.setCenterPoint(longitude, latitude, true);
-        tMapView.setLocationPoint(longitude, latitude);
+        if (tracking) {
+            tMapView.setCenterPoint(longitude, latitude, true);
+            tMapView.setLocationPoint(longitude, latitude);
+        }
     }
 
     @Override
@@ -151,4 +165,3 @@ public class GpsTracker implements LocationListener {
         }
     }
 }
-

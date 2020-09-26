@@ -7,6 +7,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
@@ -20,6 +21,7 @@ import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.AudioManager;
+import android.media.ExifInterface;
 import android.media.Image;
 import android.media.ImageReader;
 import android.media.SoundPool;
@@ -28,12 +30,14 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -44,6 +48,7 @@ import com.skt.Tmap.TMapPoint;
 import com.skt.Tmap.TMapPolyLine;
 import com.skt.Tmap.TMapView;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -63,33 +68,28 @@ import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 public class CameraActivity extends AppCompatActivity {
 
     //권한 관련
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;
     private static final int PERMISSIONS_REQUEST_CODE = 100;
-    String[] REQUIRED_PERMISSIONS  = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+    String[] REQUIRED_PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 
-    double latitude;;
+    double latitude;
     double longitude;
-    Context context;
     GpsTracker gps_tracker = null;
     TMapPoint tmappoint; //현재 위치 포인트
     TMapView tMapView = null;
     String cvs_name = "";
     boolean cvs_found = false;
+
+    //서버로 이미지 보낼 때 정상적인 각도로 변환하기 위해 사용하는 메소드
+    Bitmap rotatedBitmap;
+    File serverFile;
+    String filepath;
+    BaseApplication base;
+
 
     //TTS 사용하고자 한다면 1) 클래스 객체 선언
     private TTSAdapter tts;
@@ -104,7 +104,8 @@ public class CameraActivity extends AppCompatActivity {
 
     //이미지 출력 상태 확인
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
-    static{
+
+    static {
         ORIENTATIONS.append(Surface.ROTATION_0, 90);
         ORIENTATIONS.append(Surface.ROTATION_90, 0);
         ORIENTATIONS.append(Surface.ROTATION_180, 270);
@@ -126,7 +127,7 @@ public class CameraActivity extends AppCompatActivity {
     private HandlerThread mBackgroundThread;
 
     //카메라 상태 콜백
-    CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback(){
+    CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
 
         //카메라 장치가 잘 열렸을 때 실행되는 메소드 > 카메라 장치를 TextureView에 연결해서 사용자 화면에 보이게 하기.
         @Override
@@ -154,6 +155,9 @@ public class CameraActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
+
+        //로딩 관련
+        base = new BaseApplication();
 
         tMapView = new TMapView(this);
         tMapView.setHttpsMode(true);
@@ -189,86 +193,24 @@ public class CameraActivity extends AppCompatActivity {
 
                 takePicture(); //사진을 촬영 설정하는 메소드 호출
 
-//                retrofitTest();
             }
         });
-    }
-
-/*    private void retrofitTest() {
-        Retrofit retrofit = new Retrofit.Builder(). baseUrl("http://jsonplaceholder.typicode.com").addConverterFactory(GsonConverterFactory.create()).build();
-
-        //@GET/@POST 설정해 놓은 인터페이스와 연결
-        RetrofitService retrofitService = retrofit.create(RetrofitService.class);
-
-        //userId가 1이라는 데이터의 정보를 얻어온다.
-        retrofitService.getData("1").enqueue(new Callback<List<Post>>() {
-
-            //응답 성공했을 때
-            @Override
-            public void onResponse(@NonNull Call<List<Post>> call, @NonNull Response<List<Post>> response) {
-                if(response.isSuccessful()){
-                    List<Post> data = response.body();
-                    Log.d("상황: ","GET 성공");
-                    //userId가 1인 정보들 중에서 첫 번째 title을 출력시켜본다.
-                    Log.d("상황: ", data.get(0).getTitle());
-                }
-            }
-
-            //응답 실패했을 때
-            @Override
-            public void onFailure(Call<List<Post>> call, Throwable t) {
-                Log.d("상황: ","GET 실패");
-                t.printStackTrace();
-            }
-        });
-
-        HashMap<String, Object> input = new HashMap<>();
-        input.put("userId", 1);
-        input.put("title", "타이틀 POST");
-        input.put("body", "바디 POST");
-        retrofitService.postData(input).enqueue(new Callback<Post>() {
-            @Override
-            public void onResponse(@NonNull Call<Post> call, @NonNull Response<Post> response) {
-                if (response.isSuccessful()) {
-                    Post data = response.body();
-                    if (data != null) {
-                        Log.d("상황: ", data.getUserId() + "");
-                        Log.d("상황: ", data.getId() + "");
-                        Log.d("상황: ", data.getTitle()+"");
-                        Log.d("상황: ", data.getBody()+"");
-                        Log.e("상황: ", "======================================");
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<Post> call, @NonNull Throwable t) {
-                Log.d("상황: ", "POST 실패");
-            }
-        });
-
-    }*/
-
-
-
-    //사진 촬영 후 상품 정보를 불러오는 메소드
-    private void getProductInfo() {
     }
 
     //사진 찍는 메소드
     private void takePicture() {
         //장치가 비어있으면 사진을 찍을 수 없으므로 return
-        if(cameraDevice == null) return;
+        if (cameraDevice == null) return;
         //장치 잘 있으면 카메라 서비스 연결
         CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
 
-        try{
+        try {
             //많은 카메라 중 현재 연결된 camera의 특징을 받아온다.
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraDevice.getId());
             //일단 사진 크기는 null값
             Size[] jpegSizes = null;
             //특징 값이 있다면
-            if(characteristics != null){
+            if (characteristics != null) {
                 //카메라 특징에 맞게 사진 크기 설정
                 jpegSizes = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP).getOutputSizes(ImageFormat.JPEG);
             }
@@ -279,13 +221,13 @@ public class CameraActivity extends AppCompatActivity {
             //int width = 640;
             //int height = 480;
 
-            if(jpegSizes != null && jpegSizes.length>0){
+            if (jpegSizes != null && jpegSizes.length > 0) {
                 width = jpegSizes[0].getWidth();
                 height = jpegSizes[0].getHeight();
             }
 
             //이미지 읽어들이기
-            ImageReader reader = imagerReader.newInstance(width, height, ImageFormat.JPEG,1);
+            ImageReader reader = imagerReader.newInstance(width, height, ImageFormat.JPEG, 1);
             List<Surface> outputSurface = new ArrayList<>(2);
             outputSurface.add(reader.getSurface());
             outputSurface.add(new Surface(textureView.getSurfaceTexture()));
@@ -298,38 +240,41 @@ public class CameraActivity extends AppCompatActivity {
             //기본 장치 확인
             int rotation = getWindowManager().getDefaultDisplay().getRotation();
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
-            //captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, 90);
+
             //파일 저장 설정 고유 식별자.jpg로 파일 이름 설정해서 생성
-            file = new File(Environment.getExternalStorageDirectory()+"/"+UUID.randomUUID().toString()+".jpg");
+            file = new File(Environment.getExternalStorageDirectory() + "/" + UUID.randomUUID().toString() + ".jpg");
+            filepath = file.getPath();
+
             //이미지 읽어들이는 리스너
             ImageReader.OnImageAvailableListener readerListender = new ImageReader.OnImageAvailableListener() {
                 @Override
                 public void onImageAvailable(ImageReader reader) {
                     Image image = null;
-                    try{
+                    try {
                         image = reader.acquireLatestImage();
-                        ByteBuffer buffer = image.getPlanes() [0].getBuffer();
+                        ByteBuffer buffer = image.getPlanes()[0].getBuffer();
                         byte[] bytes = new byte[buffer.capacity()];
                         buffer.get(bytes);
                         save(bytes);
                         //upload(file);
                         uploadImage(file);
-                    }catch(FileNotFoundException e){
+                    } catch (FileNotFoundException e) {
                         e.printStackTrace();
-                    }catch(IOException e){
+                    } catch (IOException e) {
                         e.printStackTrace();
-                    }finally{
-                        if(image != null) image.close();
+                    } finally {
+                        if (image != null) image.close();
                     }
                 }
+
                 //이미지 파일 저장 메소드
                 private void save(byte[] bytes) throws IOException {
                     OutputStream outputStream = null;
-                    try{
+                    try {
                         outputStream = new FileOutputStream(file);
                         outputStream.write(bytes);
-                    }finally{
-                        if(outputStream != null)
+                    } finally {
+                        if (outputStream != null)
                             outputStream.close();
                     }
                 }
@@ -355,14 +300,14 @@ public class CameraActivity extends AppCompatActivity {
             };
 
             //카메라 입장에서 사진 촬영
-            cameraDevice.createCaptureSession(outputSurface, new CameraCaptureSession.StateCallback(){
+            cameraDevice.createCaptureSession(outputSurface, new CameraCaptureSession.StateCallback() {
 
                 //설정
                 @Override
                 public void onConfigured(@NonNull CameraCaptureSession cameraCaptureSession) {
-                    try{
-                        cameraCaptureSession.capture(captureBuilder.build(), captureListener,mBackgroundHandler);
-                    }catch (CameraAccessException e){
+                    try {
+                        cameraCaptureSession.capture(captureBuilder.build(), captureListener, mBackgroundHandler);
+                    } catch (CameraAccessException e) {
                         e.printStackTrace();
                     }
                 }
@@ -372,7 +317,7 @@ public class CameraActivity extends AppCompatActivity {
                 public void onConfigureFailed(@NonNull CameraCaptureSession session) {
 
                 }
-            },mBackgroundHandler);
+            }, mBackgroundHandler);
 
         } catch (CameraAccessException e) {
             e.printStackTrace();
@@ -383,11 +328,11 @@ public class CameraActivity extends AppCompatActivity {
     //편의점 이름을 cvs_code로 변환(키워드로 변환)
     private String get_cvs_code(String cvs_info) {
         String code;
-        if (cvs_info.trim().startsWith("세븐일레븐")) code =  "seven";
-        else if (cvs_info.trim().startsWith("이마트24")) code =  "emart";
-        else if (cvs_info.trim().startsWith("GS25")) code =  "GS";
-        else if (cvs_info.trim().startsWith("CU")) code =  "CU";
-        else code =  "none";
+        if (cvs_info.trim().startsWith("세븐일레븐")) code = "seven";
+        else if (cvs_info.trim().startsWith("이마트24")) code = "emart";
+        else if (cvs_info.trim().startsWith("GS25")) code = "GS";
+        else if (cvs_info.trim().startsWith("CU")) code = "CU";
+        else code = "none";
         Log.d("CameraActivity", "cvs_info:" + cvs_info);
         Log.d("CameraActivity", "code: " + code);
         return code;
@@ -395,10 +340,41 @@ public class CameraActivity extends AppCompatActivity {
 
     //                                myapp/imageupload version
     private void uploadImage(final File file) throws java.io.IOException {
+
+        //로딩 다이얼로그 화면 구현
+        startProgress();
+
         // FILE: device에서 storage access 권한 허용
         final String BASE_URL = "http://18.222.224.247:8000";  // aws
         //final String BASE_URL = "http://10.0.2.2:8000";   // local
 
+        //1) 이미지 회전 최종 파일 serverFile
+        //File을 Bitmap으로 변환
+        try{
+            Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
+            //서버에 이미지 전송시 회전 정렬하는 메소드 호출
+            rotatedBitmap = fixOrientation(bitmap, file.getPath());
+        }catch(Exception e){
+            e.printStackTrace();
+            Log.d("상황: ","file 비트맵 변환 실패");
+        }
+
+        //반환된 rotatedBitmap을 다시 파일로 반환
+        try{
+            //serverFile = new File(Environment.getExternalStorageDirectory()+"/"+UUID.randomUUID().toString()+".jpg");
+            serverFile = new File(filepath);
+            OutputStream os = new BufferedOutputStream(new FileOutputStream(serverFile));
+            rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+            os.close();
+        }catch(Exception e){
+            e.printStackTrace();
+            Log.d("상황: ", "서버로 보낼 이미지 파일 생성실패");
+        }
+
+        Log.d("상황: file.getName()과 file.getPath()는 ",serverFile.getName()+","+serverFile.getPath());
+
+
+        //2) 위치
         gps_tracker = new GpsTracker(this);
         latitude = gps_tracker.getLatitude();
         longitude = gps_tracker.getLongitude();
@@ -445,7 +421,7 @@ public class CameraActivity extends AppCompatActivity {
                 RequestBody requestBody = new MultipartBody.Builder()
                         .setType(MultipartBody.FORM)
                         .addFormDataPart("title", title)
-                        .addFormDataPart("image", file.getName(), RequestBody.create(MultipartBody.FORM, file))
+                        .addFormDataPart("image", serverFile.getName(), RequestBody.create(MultipartBody.FORM, serverFile))
                         .addFormDataPart("upload", format.format(now))
                         .build();
 
@@ -478,8 +454,10 @@ public class CameraActivity extends AppCompatActivity {
                         String TAG = "Camera Activity";
                         final String response_body = response.body().string();
                         if (response.isSuccessful()) {
-                            Log.d(TAG,"등록 완료");
+                            base.progressOFF();
+                            Log.d(TAG, "등록 완료");
                             //Log.d(TAG, "onResponse: " + response.body().string());
+
                             //인식된 text를 tts로 말하기
                             tts.speak(response_body);
                         } else {
@@ -502,17 +480,106 @@ public class CameraActivity extends AppCompatActivity {
         });
     }
 
+    //로딩 화면 실행하는 메소드
+    private void startProgress() {
+        base.progressON(this, "상품 정보 추출중");
+        tts.speak("상품 정보 추출 중입니다. 잠시만 기다려 주세요.");
+        //boolean result=true;
+//
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                base.progressOFF();
+//            }
+//        },0);
 
+    }
+
+
+    //서버로 보내기 전 이미지 회전에 쓰이는 메소드
+    private Bitmap fixOrientation(Bitmap bitmap, String filePath) {
+        ExifInterface ei = null;
+        Bitmap rotatedBitmap;
+
+        try{
+            ei = new ExifInterface(filePath);
+        }catch(Exception e){
+            e.printStackTrace();
+            //Log.d("상황: ","서버로 보낼 이미지 회전 정렬 실패");
+        }
+
+        int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                ExifInterface.ORIENTATION_NORMAL);
+
+        switch(orientation) {
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                rotatedBitmap = rotateImage(bitmap, 90);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                rotatedBitmap = rotateImage(bitmap, 180);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                rotatedBitmap = rotateImage(bitmap, 270);
+                break;
+            case ExifInterface.ORIENTATION_NORMAL:
+                rotatedBitmap = bitmap;
+                break;
+            default:
+                rotatedBitmap = bitmap;
+        }
+        return rotatedBitmap;
+
+    }
+
+    //이미지 회전 관련
+    public Bitmap rotateImage(Bitmap source, float angle){
+        Matrix mat = new Matrix();
+        mat.postRotate(angle);
+        Bitmap bitmap = Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), mat, true);
+        return bitmap;
+    }
+
+    //  myapp/upload와 함께 잘 작동함
+/*
     //  myapp/upload와 함께 잘 작동함
     private void upload(File file) {
         // FILE: device에서 storage access 권한 허용
         final String BASE_URL = "http://18.222.224.247:8000";  // aws
         //final String BASE_URL = "http://10.0.2.2:8000";   // local
 
+
+        //이미지 회전
+        //File을 Bitmap으로 변환
+        try{
+            Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
+            //서버에 이미지 전송시 회전 정렬하는 메소드 호출
+            rotatedBitmap = fixOrientation(bitmap, file.getPath());
+        }catch(Exception e){
+            e.printStackTrace();
+            Log.d("상황: ","file 비트맵 변환 실패");
+        }
+
+        //반환된 rotatedBitmap을 다시 파일로 반환
+        try{
+            //serverFile = new File(Environment.getExternalStorageDirectory()+"/"+UUID.randomUUID().toString()+".jpg");
+            serverFile = new File(filepath);
+            OutputStream os = new BufferedOutputStream(new FileOutputStream(serverFile));
+            rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+            os.close();
+        }catch(Exception e){
+            e.printStackTrace();
+            Log.d("상황: ", "서버로 보낼 이미지 파일 생성실패");
+        }
+
+        Log.d("상황: file.getName()과 file.getPath()는 ",serverFile.getName()+","+serverFile.getPath());
+
+
+
+
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 //.addFormDataPart("title", "nice photo")
-                .addFormDataPart("file", file.getName(), RequestBody.create(MultipartBody.FORM, file))
+                .addFormDataPart("file", serverFile.getName(), RequestBody.create(MultipartBody.FORM, serverFile))
                 .build();
 
         Request request = new Request.Builder()
@@ -544,7 +611,7 @@ public class CameraActivity extends AppCompatActivity {
             public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
                 String TAG = "Camera Activity";
                 if (response.isSuccessful()) {
-                    Log.d(TAG,"등록 완료");
+                    Log.d(TAG, "등록 완료");
                     //Log.d(TAG, "onResponse: " + response.body().string());
                 } else {
                     Log.d(TAG, "Server Response Code : " + response.code());
@@ -562,10 +629,11 @@ public class CameraActivity extends AppCompatActivity {
             }
         });
     }
+*/
 
     //카메라 화면이 보이도록 설정하는 메소드
     private void createCameraPreview() {
-        try{
+        try {
             SurfaceTexture texture = textureView.getSurfaceTexture();
             //자바의 검증 기능 assert문. 참, 거짓을 검증한다.
             assert texture != null;
@@ -573,32 +641,17 @@ public class CameraActivity extends AppCompatActivity {
             //이미지 크기 설정
             texture.setDefaultBufferSize(imageDimension.getWidth(), imageDimension.getHeight());
 
-            //카메라 화면 회전
-//            // 이미지를 시계방향으로 90도 회전시키면, 똑바로 선 이미지가 됨
-//            int textureViewRotation = -90;
-//            float textureViewWidth = textureView.getWidth();
-//            float textureViewHeight = textureView.getHeight();
-//            if (textureViewWidth == 0 || textureViewHeight == 0 || textureViewRotation == 0) {
-//                textureView.setTransform(null);
-//            } else {
-//                Matrix transformMatrix = new Matrix();
-//                float pivotX = textureViewWidth / 2;
-//                float pivotY = textureViewHeight / 2;
-//                transformMatrix.postRotate(textureViewRotation, pivotX, pivotY);
-//                textureView.setTransform(transformMatrix);
-//            }
-
             Surface surface = new Surface(texture);
 
             captureRequestBuilder = cameraDevice.createCaptureRequest(cameraDevice.TEMPLATE_PREVIEW);
             captureRequestBuilder.addTarget(surface);
 
             //카메라 입장에서 사진촬영 위와 동일함.
-            cameraDevice.createCaptureSession(Arrays.asList(surface), new CameraCaptureSession.StateCallback(){
+            cameraDevice.createCaptureSession(Arrays.asList(surface), new CameraCaptureSession.StateCallback() {
 
                 @Override
                 public void onConfigured(@NonNull CameraCaptureSession cameraCaptureSession) {
-                    if(cameraDevice==null) return;
+                    if (cameraDevice == null) return;
                     cameraCaptureSessions = cameraCaptureSession;
                     updatePreview(); //화면 업데이트 메소드 호출
                 }
@@ -616,13 +669,13 @@ public class CameraActivity extends AppCompatActivity {
 
     //카메라 화면이 업데이트 될 때 실행되는 메소드
     private void updatePreview() {
-        if(cameraDevice == null) //카메라를 연결하고 업데이트 메소드를 호출했는데, 만약 카메라 장치가 null값이면 에러 출력
+        if (cameraDevice == null) //카메라를 연결하고 업데이트 메소드를 호출했는데, 만약 카메라 장치가 null값이면 에러 출력
             Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
         //다시 빌더 셋팅
         captureRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_MODE_AUTO);
-        try{
+        try {
             cameraCaptureSessions.setRepeatingRequest(captureRequestBuilder.build(), null, mBackgroundHandler);
-        }catch(CameraAccessException e){
+        } catch (CameraAccessException e) {
             e.printStackTrace();
         }
     }
@@ -632,7 +685,7 @@ public class CameraActivity extends AppCompatActivity {
     private void openCamera() {
         //카메라 관리하는 매니저 객체
         CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
-        try{
+        try {
             //모든 카메라 종류 중에서 가장 기본 카메라인 0번째 카메라 설정
             cameraId = manager.getCameraIdList()[0];
             //0번째 카메라 특성 변수
@@ -643,11 +696,11 @@ public class CameraActivity extends AppCompatActivity {
 
             //카메라 권한 관련
             //Check realtime permission if run higher API 23
-            if(ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED){
-                ActivityCompat.requestPermissions(this, new String[] {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{
                         Manifest.permission.CAMERA,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE
-                },REQUEST_CAMERA_PERMISSION);
+                }, REQUEST_CAMERA_PERMISSION);
                 return;
             }
             //카메라 열기
@@ -659,7 +712,7 @@ public class CameraActivity extends AppCompatActivity {
 
 
     //Ctrl+o
-    TextureView.SurfaceTextureListener textureListener = new TextureView.SurfaceTextureListener(){
+    TextureView.SurfaceTextureListener textureListener = new TextureView.SurfaceTextureListener() {
 
         //텍스처뷰 이용 가능할 때 실행되는 메소드 > 카메라 여는 것 설정하는 openCamera 메소드 호출
         @Override
@@ -686,9 +739,9 @@ public class CameraActivity extends AppCompatActivity {
     //카메라 권한 결과
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if(requestCode == REQUEST_CAMERA_PERMISSION){
+        if (requestCode == REQUEST_CAMERA_PERMISSION) {
             //권한 허가 안 받았으면
-            if(grantResults [0] == PackageManager.PERMISSION_DENIED){
+            if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
                 //음성 출력
                 // tts = new TTSAdapter(this,"카메라 권한을 켜야 상품 인식 메뉴를 이용할 수 있습니다."); //TTS 사용하고자 한다면 2) 클래스 객체 생성
                 tts.speak("카메라 권한을 켜야 상품 인식 메뉴를 이용할 수 있습니다.");
@@ -705,16 +758,16 @@ public class CameraActivity extends AppCompatActivity {
         super.onResume();
         startBackgroundThread();
         //텍스쳐뷰가 이용가능하면 카메라 여는 것 설정하는 openCamera 메소드 호출
-        if(textureView.isAvailable()) openCamera();
+        if (textureView.isAvailable()) openCamera();
         else textureView.setSurfaceTextureListener(textureListener);
     }
 
     //뒤에서 다 멈추게 설정
     private void stopBackgoundThread() {
         mBackgroundThread.quitSafely();
-        try{
+        try {
             mBackgroundThread.join();
-            mBackgroundThread=null;
+            mBackgroundThread = null;
             mBackgroundHandler = null;
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -754,19 +807,4 @@ public class CameraActivity extends AppCompatActivity {
         //stopBackgoundThread(); //이건 CameraActivity에서만 쓰는 메소드
         tts.stop();
     }
-
-//    //액티비티 중지되면 실행되는 메소드
-//    //다른 액티비티 화면에 가려졌을시 음성 종료
-//    protected void onPause() {
-//        super.onPause();
-//        stopBackgoundThread(); //이건 CameraActivity에서만 쓰는 메소드
-//        tts.ttsShutdown();
-//    }
-//
-//    protected void onStop() {
-//        super.onStop();
-//        tts.ttsShutdown();
-//    }
-//    shutdown 시키면 tts를 완전히 꺼버리는 것이기 때문에 다음에 tts를 부를 때 처음부터 다시 연결시커야 함
-
 }

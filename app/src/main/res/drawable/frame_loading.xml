@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--로딩 이미지 모아두기-->
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:oneshot="false"
+    tools:ignore="MissingDefaultResource">
+    <item android:drawable="@drawable/frame_00" android:duration="200"/>
+    <item android:drawable="@drawable/frame_01" android:duration="200"/>
+    <item android:drawable="@drawable/frame_02" android:duration="200"/>
+    <item android:drawable="@drawable/frame_03" android:duration="200"/>
+    <item android:drawable="@drawable/frame_04" android:duration="200"/>
+    <item android:drawable="@drawable/frame_05" android:duration="200"/>
+    <item android:drawable="@drawable/frame_06" android:duration="200"/>
+    <item android:drawable="@drawable/frame_07" android:duration="200"/>
+
+
+</animation-list>
